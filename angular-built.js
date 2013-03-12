@@ -1,5 +1,5 @@
 /**
- * @license AngularJS v1.1.4-90ba9aa
+ * @license AngularJS v1.1.4-2fdd900
  * (c) 2010-2012 Google, Inc. http://angularjs.org
  * License: MIT
  */
@@ -1315,7 +1315,7 @@ function setupModuleLoader(window) {
  * - `codeName` – `{string}` – Code name of the release, such as "jiggling-armfat".
  */
 var version = {
-  full: '1.1.4-90ba9aa',    // all of these placeholder strings will be replaced by grunt's
+  full: '1.1.4-2fdd900',    // all of these placeholder strings will be replaced by grunt's
   major: 1,    // package task
   minor: 1,
   dot: 4,
@@ -9404,12 +9404,17 @@ function $HttpProvider() {
   }];
 }
 
-var XHR = window.XMLHttpRequest || function() {
-  try { return new ActiveXObject("Msxml2.XMLHTTP.6.0"); } catch (e1) {}
-  try { return new ActiveXObject("Msxml2.XMLHTTP.3.0"); } catch (e2) {}
-  try { return new ActiveXObject("Msxml2.XMLHTTP"); } catch (e3) {}
-  throw new Error("This browser does not support XMLHttpRequest.");
-};
+var XHR = function() {
+  if ('XMLHttpRequest' in window) {
+      return new window.XMLHttpRequest();
+  }
+  else {
+      try { return new ActiveXObject("Msxml2.XMLHTTP.6.0"); } catch (e1) {}
+      try { return new ActiveXObject("Msxml2.XMLHTTP.3.0"); } catch (e2) {}
+      try { return new ActiveXObject("Msxml2.XMLHTTP"); } catch (e3) {}
+      throw new Error("This browser does not support XMLHttpRequest.");
+  }
+}
 
 
 /**
@@ -9458,7 +9463,7 @@ function createHttpBackend($browser, XHR, $browserDefer, callbacks, rawDocument,
         delete callbacks[callbackId];
       });
     } else {
-      var xhr = new XHR();
+      var xhr = XHR();
       xhr.open(method, url, true);
       forEach(headers, function(value, key) {
         if (value) xhr.setRequestHeader(key, value);
