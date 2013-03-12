@@ -1,6 +1,7 @@
 {
   "name": "AngularJS",
   "version": "0.0.0",
+  "main": "build/angular.js",
   "dependencies": {
     "testacular": "0.5.9",
     "jasmine-node": "1.2.3",
