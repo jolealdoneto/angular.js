@@ -1,9 +1,14 @@
-var XHR = window.XMLHttpRequest || function() {
-  try { return new ActiveXObject("Msxml2.XMLHTTP.6.0"); } catch (e1) {}
-  try { return new ActiveXObject("Msxml2.XMLHTTP.3.0"); } catch (e2) {}
-  try { return new ActiveXObject("Msxml2.XMLHTTP"); } catch (e3) {}
-  throw new Error("This browser does not support XMLHttpRequest.");
-};
+var XHR = function() {
+  if ('XMLHttpRequest' in window) {
+      return new window.XMLHttpRequest();
+  }
+  else {
+      try { return new ActiveXObject("Msxml2.XMLHTTP.6.0"); } catch (e1) {}
+      try { return new ActiveXObject("Msxml2.XMLHTTP.3.0"); } catch (e2) {}
+      try { return new ActiveXObject("Msxml2.XMLHTTP"); } catch (e3) {}
+      throw new Error("This browser does not support XMLHttpRequest.");
+  }
+}
 
 
 /**
@@ -52,7 +57,7 @@ function createHttpBackend($browser, XHR, $browserDefer, callbacks, rawDocument,
         delete callbacks[callbackId];
       });
     } else {
-      var xhr = new XHR();
+      var xhr = XHR();
       xhr.open(method, url, true);
       forEach(headers, function(value, key) {
         if (value) xhr.setRequestHeader(key, value);
