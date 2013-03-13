@@ -161,11 +161,15 @@ module.exports = function(grunt) {
   });
 
 
+    grunt.task.registerTask('copy-built', 'Copy angular to the right place', function() {
+        grunt.file.copy('build/angular.js', 'angular-built.js');
+    });
+
   //alias tasks
   grunt.registerTask('test:unit', ['test:jqlite', 'test:jquery', 'test:modules']);
   grunt.registerTask('minify', ['clean', 'build', 'minall']);
   grunt.registerTask('test:e2e', ['connect:testserver', 'test:end2end']);
   grunt.registerTask('webserver', ['connect:devserver']);
-  grunt.registerTask('package', ['clean', 'buildall', 'minall', 'docs', 'copy', 'write', 'compress']);
+  grunt.registerTask('package', ['clean', 'buildall', 'minall', 'docs', 'copy', 'write', 'compress', 'copy-built']);
   grunt.registerTask('default', ['package']);
 };
