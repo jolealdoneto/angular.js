@@ -163,6 +163,7 @@ module.exports = function(grunt) {
 
     grunt.task.registerTask('copy-built', 'Copy angular to the right place', function() {
         grunt.file.copy('build/angular.js', 'angular-built.js');
+        grunt.file.copy('build/angular.min.js', 'angular-built-min.js');
     });
 
   //alias tasks
