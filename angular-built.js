@@ -1,5 +1,5 @@
 /**
- * @license AngularJS v1.1.4-467cafa
+ * @license AngularJS v1.1.4-9e9dc3e
  * (c) 2010-2012 Google, Inc. http://angularjs.org
  * License: MIT
  */
@@ -1315,7 +1315,7 @@ function setupModuleLoader(window) {
  * - `codeName` – `{string}` – Code name of the release, such as "jiggling-armfat".
  */
 var version = {
-  full: '1.1.4-467cafa',    // all of these placeholder strings will be replaced by grunt's
+  full: '1.1.4-9e9dc3e',    // all of these placeholder strings will be replaced by grunt's
   major: 1,    // package task
   minor: 1,
   dot: 4,
