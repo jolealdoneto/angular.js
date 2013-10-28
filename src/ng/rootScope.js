@@ -118,6 +118,7 @@ function $RootScopeProvider(){
                      this.$$childHead = this.$$childTail = null;
       this['this'] = this.$root =  this;
       this.$$destroyed = false;
+      this.$$disabled = false;
       this.$$asyncQueue = [];
       this.$$postDigestQueue = [];
       this.$$listeners = {};
@@ -500,7 +501,7 @@ function $RootScopeProvider(){
             postDigestQueue = this.$$postDigestQueue,
             length,
             dirty, ttl = TTL,
-            next, current, target = this,
+            next, current, enabledChildHead, enabledNextSibling, target = this,
             watchLog = [],
             logIdx, logMsg;
 
@@ -554,9 +555,21 @@ function $RootScopeProvider(){
             // Insanity Warning: scope depth-first traversal
             // yes, this code is a bit crazy, but it works and we have tests to prove it!
             // this piece should be kept in sync with the traversal in $broadcast
-            if (!(next = (current.$$childHead || (current !== target && current.$$nextSibling)))) {
-              while(current !== target && !(next = current.$$nextSibling)) {
+            enabledChildHead = current.$$childHead;
+            while (enabledChildHead && enabledChildHead.$$disabled) {
+                enabledChildHead = enabledChildHead.$$nextSibling;
+            }
+            enabledNextSibling = current.$$nextSibling;
+            while (enabledNextSibling && enabledNextSibling.$$disabled) {
+                enabledNextSibling = enabledNextSibling.$$nextSibling;
+            }
+            if (!(next = (enabledChildHead || (current !== target && enabledNextSibling)))) {
+              while(current !== target && !(next = enabledNextSibling)) {
                 current = current.$parent;
+                enabledNextSibling = current.$$nextSibling;
+                while (enabledNextSibling && enabledNextSibling.$$disabled) {
+                    enabledNextSibling = enabledNextSibling.$$nextSibling;
+                }
               }
             }
           } while ((current = next));
@@ -905,6 +918,7 @@ function $RootScopeProvider(){
         var target = this,
             current = target,
             next = target,
+            enabledChildHead, enabledNextSibling,
             event = {
               name: name,
               targetScope: target,
@@ -939,10 +953,22 @@ function $RootScopeProvider(){
 
           // Insanity Warning: scope depth-first traversal
           // yes, this code is a bit crazy, but it works and we have tests to prove it!
-          // this piece should be kept in sync with the traversal in $digest
-          if (!(next = (current.$$childHead || (current !== target && current.$$nextSibling)))) {
-            while(current !== target && !(next = current.$$nextSibling)) {
+          // this piece should be kept in sync with the traversal in $broadcast
+          enabledChildHead = current.$$childHead;
+          while (enabledChildHead && enabledChildHead.$$disabled) {
+              enabledChildHead = enabledChildHead.$$nextSibling;
+          }
+          enabledNextSibling = current.$$nextSibling;
+          while (enabledNextSibling && enabledNextSibling.$$disabled) {
+              enabledNextSibling = enabledNextSibling.$$nextSibling;
+          }
+          if (!(next = (enabledChildHead || (current !== target && enabledNextSibling)))) {
+            while(current !== target && !(next = enabledNextSibling)) {
               current = current.$parent;
+              enabledNextSibling = current.$$nextSibling;
+              while (enabledNextSibling && enabledNextSibling.$$disabled) {
+                  enabledNextSibling = enabledNextSibling.$$nextSibling;
+              }
             }
           }
         } while ((current = next));
